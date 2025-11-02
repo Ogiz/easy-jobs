@@ -3,7 +3,7 @@ namespace BackgroundJobs
     public abstract class Job : IJob
     {
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly object _statusLock = new object();
+        private readonly object _statusLock = new();
         private DateTime? _endTime;
         private string? _errorMessage;
         private Task? _executionTask;
@@ -23,7 +23,7 @@ namespace BackgroundJobs
 
         public virtual void Dispose()
         {
-            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource.Dispose();
         }
 
         public void Execute()

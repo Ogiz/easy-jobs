@@ -5,14 +5,14 @@ namespace BackgroundJobs
 {
     public class JobsRegistry
     {
-        private static readonly Lazy<JobsRegistry> _instance = new Lazy<JobsRegistry>(() => new JobsRegistry());
+        private static readonly Lazy<JobsRegistry> _instance = new(() => new JobsRegistry());
 
         [SuppressMessage("ReSharper", "NotAccessedField.Local", Justification = "Timer is used for housekeeping tasks")]
         private readonly Timer _housekeepingTimer;
 
         private readonly TimeSpan _jobRetentionTime = TimeSpan.FromMinutes(10);
-        private readonly ConcurrentDictionary<Guid, IJob> _jobsById = new ConcurrentDictionary<Guid, IJob>();
-        private readonly ConcurrentDictionary<string, IJob> _jobsByName = new ConcurrentDictionary<string, IJob>();
+        private readonly ConcurrentDictionary<Guid, IJob> _jobsById = new();
+        private readonly ConcurrentDictionary<string, IJob> _jobsByName = new();
         private readonly int _maxJobs = 1000;
 
         public static JobsRegistry Instance => _instance.Value;
