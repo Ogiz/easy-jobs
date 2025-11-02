@@ -49,6 +49,8 @@ namespace BackgroundJobs
             Func<JobResult, Task<JobResult>>? onCancellation,
             CancellationToken cancellationToken = default)
         {
+            job.Execute();
+
             JobResult result = job.GetResult();
 
             if (!result.IsRunning)
