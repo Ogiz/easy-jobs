@@ -21,9 +21,25 @@ namespace BackgroundJobs
 
         public event Action<JobResult>? StatusChanged;
 
-        public virtual void Dispose()
+        public void Dispose()
         {
-            _cancellationTokenSource.Dispose();
+            lock (_statusLock)
+            {
+                if (_status == JobStatus.Pending)
+                {
+                    _status = JobStatus.Cancelled;
+                    _errorMessage = "Job disposed before execution";
+                    _endTime = DateTime.UtcNow;
+                }
+            }
+            _cancellationTokenSource?.Dispose();
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
         public void Execute()
@@ -91,7 +107,7 @@ namespace BackgroundJobs
 
         protected virtual void OnError(Exception ex)
         {
-            // Override for custom error handling
+            // Override to handle errors
         }
 
         public JobResult GetResult()

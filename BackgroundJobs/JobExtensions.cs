@@ -49,7 +49,7 @@ namespace BackgroundJobs
             Func<JobResult, Task<JobResult>>? onCancellation,
             CancellationToken cancellationToken = default)
         {
-            var result = job.GetResult();
+            JobResult result = job.GetResult();
 
             if (!result.IsRunning)
             {
@@ -68,7 +68,7 @@ namespace BackgroundJobs
                 }
             }
 
-            var tcs = new TaskCompletionSource<JobResult>();
+            TaskCompletionSource<JobResult> tcs = new TaskCompletionSource<JobResult>();
             
             void StatusChangedHandler(JobResult r)
             {

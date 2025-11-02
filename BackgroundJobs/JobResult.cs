@@ -28,7 +28,7 @@ namespace BackgroundJobs
             {
                 if (!StartTime.HasValue) return null;
                 
-                var duration = EndTime.HasValue 
+                TimeSpan duration = EndTime.HasValue 
                     ? EndTime.Value - StartTime.Value 
                     : DateTime.UtcNow - StartTime.Value;
                 
