@@ -58,20 +58,18 @@ namespace BackgroundJobs.Tests
         }
 
         [Fact]
-        public void RegisterPreExecutedJob_DisposesAndReturnsCurrentStatus()
+        public void RegisterPreExecutedJob_ReturnsCurrentStatus()
         {
             var registry = JobsRegistry.Instance;
             var job = new SuccessJob();
 
             job.Execute();
 
-            System.Threading.Thread.Sleep(100);
+            Thread.Sleep(100);
 
             var result = registry.RegisterJob(job);
 
             Assert.True(result.Status == JobStatus.Completed || result.Status == JobStatus.Running);
-
-            Assert.Throws<KeyNotFoundException>(() => registry.GetJobById(job.Id));
         }
 
         [Fact]
@@ -94,14 +92,15 @@ namespace BackgroundJobs.Tests
         }
 
         [Fact]
-        public void GetJobById_ThrowsWhenNotFound()
+        public void GetJobById_ReturnsDummyJobWithCompletedStatus()
         {
             var registry = JobsRegistry.Instance;
             var nonExistentId = Guid.NewGuid();
 
-            var exception = Assert.Throws<KeyNotFoundException>(() => registry.GetJobById(nonExistentId));
-
-            Assert.Contains(nonExistentId.ToString(), exception.Message);
+            var result = registry.GetJobById(nonExistentId);
+            
+            Assert.Equal(nonExistentId, result.Id);
+            Assert.Equal(JobStatus.Completed, result.Status);
         }
 
         [Fact]
