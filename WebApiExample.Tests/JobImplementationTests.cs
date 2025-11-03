@@ -22,7 +22,6 @@ public class JobImplementationTests
     public async Task SuccessJob_ReturnsCompletedResult_WithCorrectTiming()
     {
         var job = new SuccessJob("TestSuccess");
-        var startTime = DateTime.UtcNow;
         job.Execute();
 
         await job.WaitForCompletionAsync();
@@ -42,7 +41,7 @@ public class JobImplementationTests
         job.Execute();
 
         var result = await job.WaitForCompletionAsync(
-            onFailure: (r) => Task.FromResult(r));
+            onFailure: Task.FromResult);
 
         Assert.Equal(JobStatus.Failed, result.Status);
         Assert.NotNull(result.ErrorMessage);
@@ -56,7 +55,7 @@ public class JobImplementationTests
         job.Execute();
 
         var result = await job.WaitForCompletionAsync(
-            onFailure: (r) => Task.FromResult(r));
+            onFailure: Task.FromResult);
 
         Assert.Equal(JobStatus.Failed, result.Status);
         Assert.Contains(customError, result.ErrorMessage);
@@ -70,7 +69,7 @@ public class JobImplementationTests
         job.Execute();
 
         var result = await job.WaitForCompletionAsync(
-            onFailure: (r) => Task.FromResult(r));
+            onFailure: Task.FromResult);
 
         Assert.Equal(JobStatus.Failed, result.Status);
         Assert.Contains(customMessage, result.ErrorMessage);
@@ -106,7 +105,7 @@ public class JobImplementationTests
 
         var result = await job.WaitForCompletionAsync(
             onFailure: null,
-            onCancellation: (r) => Task.FromResult(r));
+            onCancellation: Task.FromResult);
         var elapsed = DateTime.UtcNow - startTime;
 
         Assert.Equal(JobStatus.Cancelled, result.Status);
@@ -192,7 +191,7 @@ public class JobImplementationTests
 
         orchestrator.Execute();
         var result = await orchestrator.WaitForCompletionAsync(
-            onFailure: (r) => Task.FromResult(r));
+            onFailure: Task.FromResult);
 
         Assert.Equal(JobStatus.Failed, result.Status);
         Assert.NotNull(result.ChildJobs);
@@ -308,7 +307,7 @@ public class JobImplementationTests
 
         orchestrator.Execute();
         var result = await orchestrator.WaitForCompletionAsync(
-            onFailure: (r) => Task.FromResult(r));
+            onFailure: Task.FromResult);
 
         Assert.Equal(JobStatus.Failed, result.Status);
         Assert.NotNull(result.ChildJobs);

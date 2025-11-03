@@ -34,7 +34,7 @@ public class ControllerTests : TestBase
     public async Task GetJobById_ReturnsJobResult_WhenJobExists()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/failing");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(100);
 
@@ -49,7 +49,7 @@ public class ControllerTests : TestBase
     public async Task CancelJob_CancelsRunningJob_WhenJobExists()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=30");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(100);
 
@@ -68,7 +68,7 @@ public class ControllerTests : TestBase
     public async Task CancelJob_HandlesAlreadyCompletedJob_Gracefully()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/failing");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(100);
 
@@ -84,9 +84,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/long-running");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
-        Assert.NotNull((string)response.Name);
-        Assert.Contains("CancellableJob", (string)response.Name);
+        Assert.NotEqual(Guid.Empty, response.Id);
+        Assert.NotNull(response.Name);
+        Assert.Contains("CancellableJob", response.Name);
     }
 
     [Fact]
@@ -95,9 +95,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=2");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
         var initialResult = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
         Assert.Equal(JobStatus.Running, initialResult.Status);
 
@@ -113,9 +113,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/sequential");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
-        Assert.NotNull((string)response.Name);
-        Assert.Contains("Sequential", (string)response.Name);
+        Assert.NotEqual(Guid.Empty, response.Id);
+        Assert.NotNull(response.Name);
+        Assert.Contains("Sequential", response.Name);
     }
 
     [Fact]
@@ -124,9 +124,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/sequential?continueOnFailure=true");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
         await Task.Delay(6000);
 
         var result = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
@@ -141,9 +141,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/parallel");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
-        Assert.NotNull((string)response.Name);
-        Assert.Contains("Parallel", (string)response.Name);
+        Assert.NotEqual(Guid.Empty, response.Id);
+        Assert.NotNull(response.Name);
+        Assert.Contains("Parallel", response.Name);
     }
 
     [Fact]
@@ -152,9 +152,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/parallel?continueOnFailure=true");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
         await Task.Delay(6000);
 
         var result = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
@@ -169,9 +169,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>("/api/jobexecution/failing");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
         await Task.Delay(100);
 
         var result = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
@@ -187,9 +187,9 @@ public class ControllerTests : TestBase
         var response = await PostAsync<JobResultDto>($"/api/jobexecution/failing?errorMessage={Uri.EscapeDataString(customError)}");
 
         Assert.NotNull(response);
-        Assert.NotEqual(Guid.Empty, (Guid)response.Id);
+        Assert.NotEqual(Guid.Empty, response.Id);
 
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
         await Task.Delay(100);
 
         var result = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
@@ -201,7 +201,7 @@ public class ControllerTests : TestBase
     public async Task ParallelJob_ExecutesConcurrently_CompletesInParallel()
     {
         var response = await PostAsync<JobResultDto>("/api/jobexecution/parallel");
-        var jobId = (Guid)response.Id;
+        var jobId = response.Id;
 
         var startTime = DateTime.UtcNow;
 

@@ -13,7 +13,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task FullJobLifecycle_CreateMonitorCompletion_WorksEndToEnd()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=1");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         Assert.NotEqual(Guid.Empty, jobId);
 
@@ -33,7 +33,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task FullJobLifecycle_CreateCancelVerify_WorksEndToEnd()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=30");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         Assert.NotEqual(Guid.Empty, jobId);
 
@@ -58,9 +58,9 @@ public class IntegrationScenarioTests : TestBase
         var job2Response = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=1");
         var job3Response = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=1");
 
-        var job1Id = (Guid)job1Response.Id;
-        var job2Id = (Guid)job2Response.Id;
-        var job3Id = (Guid)job3Response.Id;
+        var job1Id = job1Response.Id;
+        var job2Id = job2Response.Id;
+        var job3Id = job3Response.Id;
 
         Assert.NotEqual(job1Id, job2Id);
         Assert.NotEqual(job1Id, job3Id);
@@ -86,7 +86,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task SequentialOrchestrator_EndToEndWorkflow_ExecutesSuccessfully()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/sequential?continueOnFailure=false");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         Assert.NotEqual(Guid.Empty, jobId);
 
@@ -118,7 +118,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task ParallelOrchestrator_EndToEndWorkflow_ExecutesSuccessfully()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/parallel?continueOnFailure=false");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         Assert.NotEqual(Guid.Empty, jobId);
 
@@ -156,7 +156,7 @@ public class IntegrationScenarioTests : TestBase
         var createResponse = await PostAsync<JobResultDto>(
             $"/api/jobexecution/failing?errorMessage={Uri.EscapeDataString(customError)}"
         );
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(100);
 
@@ -184,8 +184,8 @@ public class IntegrationScenarioTests : TestBase
         var afterCreationJobs = await GetAsync<List<JobResultDto>>("/api/jobs");
         Assert.True(afterCreationJobs.Count >= initialCount + 2);
 
-        var job1Id = (Guid)job1Response.Id;
-        var job2Id = (Guid)job2Response.Id;
+        var job1Id = job1Response.Id;
+        var job2Id = job2Response.Id;
 
         Assert.Contains(afterCreationJobs, j => j.Id == job1Id);
         Assert.Contains(afterCreationJobs, j => j.Id == job2Id);
@@ -206,9 +206,9 @@ public class IntegrationScenarioTests : TestBase
         var job2Response = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=30");
         var job3Response = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=30");
 
-        var job1Id = (Guid)job1Response.Id;
-        var job2Id = (Guid)job2Response.Id;
-        var job3Id = (Guid)job3Response.Id;
+        var job1Id = job1Response.Id;
+        var job2Id = job2Response.Id;
+        var job3Id = job3Response.Id;
 
         await Task.Delay(100);
 
@@ -233,7 +233,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task SequentialOrchestrator_WithContinueOnFailure_HandlesFailureCorrectly()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/sequential?continueOnFailure=true");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(6000);
 
@@ -248,7 +248,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task ParallelOrchestrator_WithContinueOnFailure_HandlesFailureCorrectly()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/parallel?continueOnFailure=true");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(6000);
 
@@ -263,7 +263,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task JobStatusTransitions_ThroughAPI_AreConsistent()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/long-running?durationSeconds=2");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         var result1 = await GetAsync<JobResultDto>($"/api/jobs/{jobId}");
         Assert.Equal(JobStatus.Running, result1.Status);
@@ -283,7 +283,7 @@ public class IntegrationScenarioTests : TestBase
     public async Task FailingJob_ImmediateFailure_CapturedCorrectly()
     {
         var createResponse = await PostAsync<JobResultDto>("/api/jobexecution/failing");
-        var jobId = (Guid)createResponse.Id;
+        var jobId = createResponse.Id;
 
         await Task.Delay(50);
 
