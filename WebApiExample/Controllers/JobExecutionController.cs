@@ -14,13 +14,7 @@ public class JobExecutionController : ControllerBase
         var job = new CancellableJob($"Long-Running-{Guid.NewGuid():N}", TimeSpan.FromSeconds(durationSeconds));
         var result = JobsRegistry.Instance.RegisterJob(job);
 
-        return Ok(new
-        {
-            jobId = job.Id,
-            jobName = job.Name,
-            message = $"Started long-running job for {durationSeconds} seconds",
-            result
-        });
+        return Ok(result);
     }
 
     [HttpPost("sequential")]
@@ -36,14 +30,7 @@ public class JobExecutionController : ControllerBase
         var orchestrator = new SequentialOrchestratorJob($"Sequential-Orchestrator-{Guid.NewGuid():N}", jobs, continueOnFailure);
         var result = JobsRegistry.Instance.RegisterJob(orchestrator);
 
-        return Ok(new
-        {
-            jobId = orchestrator.Id,
-            jobName = orchestrator.Name,
-            message = "Started sequential orchestrator with 3 jobs",
-            continueOnFailure,
-            result
-        });
+        return Ok(result);
     }
 
     [HttpPost("parallel")]
@@ -59,14 +46,7 @@ public class JobExecutionController : ControllerBase
         var orchestrator = new ParallelOrchestratorJob($"Parallel-Orchestrator-{Guid.NewGuid():N}", jobs, continueOnFailure);
         var result = JobsRegistry.Instance.RegisterJob(orchestrator);
 
-        return Ok(new
-        {
-            jobId = orchestrator.Id,
-            jobName = orchestrator.Name,
-            message = "Started parallel orchestrator with 3 jobs (2s, 3s, 5s durations)",
-            continueOnFailure,
-            result
-        });
+        return Ok(result);
     }
 
     [HttpPost("failing")]
@@ -75,12 +55,6 @@ public class JobExecutionController : ControllerBase
         var job = new FailingJob($"Failing-Job-{Guid.NewGuid():N}", errorMessage);
         var result = JobsRegistry.Instance.RegisterJob(job);
 
-        return Ok(new
-        {
-            jobId = job.Id,
-            jobName = job.Name,
-            message = "Started failing job (will fail immediately)",
-            result
-        });
+        return Ok(result);
     }
 }

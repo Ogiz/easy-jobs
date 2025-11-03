@@ -17,3 +17,10 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+namespace WebApiExample
+{
+    public partial class Program
+    {
+    }
+}

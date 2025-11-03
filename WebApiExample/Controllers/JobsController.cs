@@ -17,28 +17,14 @@ public class JobsController : ControllerBase
     [HttpGet("{id:guid}")]
     public IActionResult GetJobById(Guid id)
     {
-        var job = JobsRegistry.Instance.GetJobById(id);
-
-        if (job == null)
-        {
-            return NotFound(new { message = $"Job with ID {id} not found" });
-        }
-
-        return Ok(job.GetResult());
+        var result = JobsRegistry.Instance.GetJobById(id);
+        return Ok(result);
     }
 
     [HttpDelete("{id:guid}/cancel")]
     public IActionResult CancelJob(Guid id)
     {
-        var job = JobsRegistry.Instance.GetJobById(id);
-
-        if (job == null)
-        {
-            return NotFound(new { message = $"Job with ID {id} not found" });
-        }
-
-        job.Cancel();
-
-        return Ok(new { message = $"Cancellation requested for job {id}", result = job.GetResult() });
+        var result = JobsRegistry.Instance.CancelJob(id);
+        return Ok(result);
     }
 }

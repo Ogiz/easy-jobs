@@ -83,14 +83,14 @@ namespace BackgroundJobs
             return job.GetResult();
         }
 
-        public IJob GetJobById(Guid id)
+        public JobResult GetJobById(Guid id)
         {
             if (_jobsById.TryGetValue(id, out IJob? job))
             {
-                return job;
+                return job.GetResult();
             }
 
-            throw new KeyNotFoundException($"Job with ID '{id}' not found.");
+            return new JobResult("Unknown", id, JobStatus.Completed, DateTime.UtcNow, DateTime.UtcNow, "no job in registry");
         }
 
         public IJob GetJobByName(string name)
@@ -106,6 +106,17 @@ namespace BackgroundJobs
         public IEnumerable<JobResult> GetAllJobs()
         {
             return _jobsById.Values.Select(job => job.GetResult()).ToList();
+        }
+
+        public JobResult CancelJob(Guid id)
+        {
+            if (_jobsById.TryGetValue(id, out IJob? job))
+            {
+                job.Cancel();
+                return job.GetResult();
+            }
+
+            return new JobResult("Unknown", id, JobStatus.Completed, DateTime.UtcNow, DateTime.UtcNow, "no job in registry");
         }
 
         private void HousekeepingCallback(object? state)
